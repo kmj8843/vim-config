@@ -1,0 +1,109 @@
+-- Read the docs: https://www.lunarvim.org/docs/configuration
+-- Video Tutorials: https://www.youtube.com/watch?v=sFA9kX-Ud_c&list=PLhoH5vyxr6QqGu0i7tt_XoVK9v-KvZ3m6
+-- Forum: https://www.reddit.com/r/lunarvim/
+-- Discord: https://discord.com/invite/Xb9B4Ny
+
+-- Enable powershell as your default shell
+vim.opt.shell = "pwsh.exe -NoLogo"
+vim.opt.shellcmdflag =
+"-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+vim.cmd [[
+		let &shellredir = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+		let &shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+		set shellquote= shellxquote=
+  ]]
+
+-- Set a compatible clipboard manager
+vim.g.clipboard = {
+  copy = {
+    ["+"] = "win32yank.exe -i --crlf",
+    ["*"] = "win32yank.exe -i --crlf",
+  },
+  paste = {
+    ["+"] = "win32yank.exe -o --lf",
+    ["*"] = "win32yank.exe -o --lf",
+  },
+}
+
+lvim.plugins = {
+  -- You must install glow globally
+  -- https://github.com/charmbracelet/glow
+  -- yay -S glow
+  {
+    "npxbr/glow.nvim",
+    ft = { "markdown" },
+    config = function()
+      require('glow').setup()
+    end
+    -- build = "yay -S glow"
+  },
+  {
+    "JoosepAlviste/nvim-ts-context-commentstring",
+    event = "BufRead",
+  },
+  {
+    'wfxr/minimap.vim',
+    build = "cargo install --locked code-minimap",
+    -- cmd = {"Minimap", "MinimapClose", "MinimapToggle", "MinimapRefresh", "MinimapUpdateHighlight"},
+    config = function()
+      vim.cmd("let g:minimap_width = 10")
+      vim.cmd("let g:minimap_auto_start = 1")
+      vim.cmd("let g:minimap_auto_start_win_enter = 1")
+    end,
+  },
+  -- {
+  --   "karb94/neoscroll.nvim",
+  --   event = "WinScrolled",
+  --   config = function()
+  --     require("config.neoscroll").setup()
+  --   end
+  -- },
+  {
+    "folke/todo-comments.nvim",
+    event = "BufRead",
+    config = function()
+      require("todo-comments").setup()
+    end,
+  },
+  {
+    "itchyny/vim-cursorword",
+    event = { "BufEnter", "BufNewFile" },
+    config = function()
+      require("config.vim-cursorword").setup()
+    end
+  },
+  {
+    "tpope/vim-bundler",
+    cmd = { "Bundler", "Bopen", "Bsplit", "Btabedit" }
+  },
+  {
+    "lukas-reineke/lsp-format.nvim",
+    config = function()
+      require("lsp-format").setup()
+    end
+  },
+  {
+    "f-person/git-blame.nvim",
+    event = "BufRead",
+    config = function()
+      vim.cmd "highlight default link gitblame SpecialComment"
+      vim.g.gitblame_enabled = 0
+    end,
+  },
+  { "tpope/vim-surround" },
+}
+
+lvim.keys.normal_mode["|"] = ":vsplit<CR><LF>"
+lvim.keys.normal_mode["-"] = ":split<CR><LF>"
+lvim.keys.normal_mode["<F5>"] = ":e ++enc=euc-kr<CR>" -- euc-kr로 읽기
+lvim.keys.normal_mode["<F6>"] = ":w ++enc=utf-8<CR>"  -- utf-8로 저장
+lvim.keys.normal_mode["<F7>"] = ":e ++enc=utf-8<CR>"  -- utf-8로 읽기
+lvim.keys.normal_mode["<F8>"] = ":w ++enc=euc-kr<CR>" -- euc-kr로 저장
+lvim.keys.normal_mode["<leader>g"] = ":noh<CR>"
+lvim.keys.normal_mode["<leader>m"] = ":MinimapToggle<CR>"
+
+lvim.format_on_save.enabled = true
+
+require('config.null-ls').setup()
+
+lvim.builtin.project.manual_mode = true

@@ -1,0 +1,54 @@
+""" Map leader to space ---------------------
+let mapleader=" "
+
+""" Plugins  --------------------------------
+set NERDTree
+set surround
+set multiple-cursors
+set commentary
+set highlightedyank
+
+""" Plugin settings -------------------------
+let g:highlightedyank_highlight_duration = "150"
+let g:highlightedyank_highlight_color = "rgba(160, 160, 160, 155)"
+
+""" Common settings -------------------------
+set clipboard+=unnamed
+set showmode
+set showcmd
+set scrolloff=5
+set incsearch
+set number
+
+""" Idea specific settings ------------------
+" https://github.com/JetBrains/ideavim/wiki/set-commands
+set ideajoin
+set ideastatusicon=gray
+set idearefactormode=keep
+
+""" Mappings --------------------------------
+nmap <leader>e :NERDTreeToggle<CR>
+nmap <leader>t :NERDTreeFind<CR>
+nmap <leader>w <Action>(SaveAll)
+nmap <leader>f <Action>(ToggleDistractionFreeMode)
+nmap <leader><ESC> <Action>(HideAllWindows)
+" nmap <leader>gg <Action>(GitRepositoryActions)
+nmap <leader>o <Action>(FileStructurePopup)
+nmap <leader>gg <Action>(Git.Menu)
+nmap <leader>c <Action>(CloseEditor)
+nmap <leader>\| <Action>(SplitVertically)
+nmap <leader>_ <Action>(SplitHorizontally)
+nmap <leader>bj <Action>(TabList)
+nmap <Tab> <Action>(NextTab)
+nmap <S-Tab> <Action>(PreviousTab)
+nmap <C-H> <C-W>h
+nmap <C-J> <C-W>j
+nmap <C-K> <C-W>k
+nmap <C-L> <C-W>l
+nmap <leader>sd <Action>(QuickJavaDoc)
+nmap <leader>i <Action>(Generate)
+nmap <leader>/ <Action>(ShowErrorDescription)
+nmap [e <Action>(GotoNextError)
+nmap ]e <Action>(GotoPreviousError)
+imap <C-y> <CR>
+

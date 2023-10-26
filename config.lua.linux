@@ -1,0 +1,120 @@
+-- Read the docs: https://www.lunarvim.org/docs/configuration
+-- Video Tutorials: https://www.youtube.com/watch?v=sFA9kX-Ud_c&list=PLhoH5vyxr6QqGu0i7tt_XoVK9v-KvZ3m6
+-- Forum: https://www.reddit.com/r/lunarvim/
+-- Discord: https://discord.com/invite/Xb9B4Ny
+
+-- https://github.com/folke/lazy.nvim
+lvim.plugins = {
+  -- You must install glow globally
+  -- https://github.com/charmbracelet/glow
+  -- yay -S glow
+  {
+    "npxbr/glow.nvim",
+    ft = { "markdown" },
+    -- build = "yay -S glow"
+    config = function()
+      require("glow").setup()
+    end
+  },
+  {
+    "JoosepAlviste/nvim-ts-context-commentstring",
+    event = "BufRead",
+  },
+  {
+    'wfxr/minimap.vim',
+    build = "cargo install --locked code-minimap",
+    -- cmd = {"Minimap", "MinimapClose", "MinimapToggle", "MinimapRefresh", "MinimapUpdateHighlight"},
+    config = function()
+      vim.cmd("let g:minimap_width = 10")
+      vim.cmd("let g:minimap_auto_start = 1")
+      vim.cmd("let g:minimap_auto_start_win_enter = 1")
+    end,
+  },
+  {
+    "folke/todo-comments.nvim",
+    event = "BufRead",
+    config = function()
+      require("todo-comments").setup()
+    end,
+  },
+  {
+    "itchyny/vim-cursorword",
+    event = { "BufEnter", "BufNewFile" },
+    config = function()
+      require("config.vim-cursorword").setup()
+    end
+  },
+  {
+    "tpope/vim-bundler",
+    cmd = { "Bundler", "Bopen", "Bsplit", "Btabedit" }
+  },
+  {
+    "lukas-reineke/lsp-format.nvim",
+    config = function()
+      require("lsp-format").setup()
+    end
+  },
+  {
+    "f-person/git-blame.nvim",
+    event = "BufRead",
+    config = function()
+      vim.cmd "highlight default link gitblame SpecialComment"
+      vim.g.gitblame_enabled = 0
+    end,
+  },
+  { "tpope/vim-surround" },
+  {
+    "mg979/vim-visual-multi",
+    branch = "master"
+  }
+}
+
+
+lvim.keys.normal_mode["|"] = ":vsplit<CR>"
+lvim.keys.normal_mode["-"] = ":split<CR>"
+lvim.keys.normal_mode["<F5>"] = ":e ++enc=euc-kr<CR>" -- euc-kr로 읽기
+lvim.keys.normal_mode["<F6>"] = ":w ++enc=utf-8<CR>"  -- utf-8로 저장
+lvim.keys.normal_mode["<F7>"] = ":e ++enc=utf-8<CR>"  -- utf-8로 읽기
+lvim.keys.normal_mode["<F8>"] = ":w ++enc=euc-kr<CR>" -- euc-kr로 저장
+lvim.keys.normal_mode["<leader>g"] = ":noh<CR>"
+lvim.keys.normal_mode["<leader>m"] = ":MinimapToggle<CR>"
+
+lvim.format_on_save = true
+
+require("config.null-ls").setup()
+
+lvim.autocommands = {
+  {
+    { "ColorScheme" },
+    {
+      pattern = "*",
+      callback = function()
+        vim.api.nvim_set_hl(0, "OverLength", { ctermbg = "red", ctermfg = "white", bg = "#592929" })
+        vim.api.nvim_set_hl(0, "StrongOverLength", { ctermbg = "red", ctermfg = "white", bg = "#9E2E2E" })
+      end,
+    },
+  },
+  {
+    { "BufEnter", "BufWinEnter" },
+    {
+      pattern = { "*.md", "*.java", "*.c", "*.cpp", "*.cs" },
+      callback = function()
+        vim.cmd([[match OverLength /\%81v.\+/]])
+        vim.cmd([[2match StrongOverLength /\%121v.\+/]])
+      end,
+    }
+  },
+  {
+    { "BufDelete", "BufWinLeave" },
+    {
+      pattern = { "*.md", "*.java", "*.c", "*.cpp", "*.cs" },
+      callback = function()
+        vim.cmd([[match]])
+        vim.cmd([[2match]])
+      end,
+    }
+  }
+}
+
+lvim.builtin.project.patterns = { "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "pom.xml", "build.gradle",
+  ".git" }
